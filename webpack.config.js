@@ -16,14 +16,19 @@ module.exports = {
         filename: 'bundle.js',
     },
     mode: 'development',
-    devServer:{
-        hot:true,
-        open:true,
+    devServer: {
+        hot: true,
+        open: true,
+    },
+    resolve: {
+        alias: {
+            phaser: path.resolve(__dirname, 'node_modules/phaser/dist/phaser.js')
+        }
     },
     plugins: [new HtmlWebpackPlugin(
         {
             title: 'My App',
             filename: 'index.html'
         }
-    )]
+    )],
 };

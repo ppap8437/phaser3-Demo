@@ -2,16 +2,16 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-05-19 15:39:38
  * @LastEditors: mayx 1019724021@qq.com
- * @LastEditTime: 2025-06-05 16:07:22
+ * @LastEditTime: 2025-06-06 16:09:00
  * @FilePath: \test\src\scenes\load.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import Phaser, { Physics } from "phaser";
+import { playerData } from "../players/load";
 export default class LoadScene extends Phaser.Scene {
     platforms;
     player;
     cursors;
-    actionConfigList;
     start;
     bombs;
     score = 0;
@@ -110,4 +110,4 @@ export default class LoadScene extends Phaser.Scene {
     update() {
     }
 }
-const loadScene = new LoadScene();
+
