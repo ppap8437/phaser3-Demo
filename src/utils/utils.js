@@ -13,7 +13,7 @@ export const actionConfigList = [
     },
     {
         key: 'right',
-        frames: { key: 'dude', config: { start: 5, end: 8 } }, //this.anims.generateFrameNumbers('dude', { start: 5, end: 8 })
+        frames: { key: 'dude', config: { start: 5, end: 8 } },
         frameRate: 10,
         repeat: -1
     }
@@ -22,5 +22,35 @@ export const createdPlayer = {
     x: 100,
     y: 250,
     key: 'dude',
-    frame: 0,
 }
+export const preLoadResource = [
+    {
+        key: 'sky',
+        path: 'skies/space3.png'
+    }, {
+        key: 'logo',
+        path: 'sprites/phaser3-logo.png'
+    }, {
+        key: 'ground',
+        path: 'sprites/s1.png'
+    }, {
+        key: 'red',
+        path: 'particles/red.png'
+    }, {
+        key: 'star',
+        path: 'particles/star.png'
+    }, {
+        key: 'bombs',
+        path: 'particles/bomb.png'
+    },
+]
+export const preLoadSpritesheet = [
+    {
+        key: 'dude',
+        path: 'players/dude.png',
+        config: {
+            frameWidth: 32,
+            frameHeight: 48
+        }
+    }
+]

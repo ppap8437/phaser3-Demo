@@ -2,19 +2,21 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-05-19 15:39:38
  * @LastEditors: mayx 1019724021@qq.com
- * @LastEditTime: 2025-06-06 16:09:00
+ * @LastEditTime: 2025-06-10 15:50:10
  * @FilePath: \test\src\scenes\load.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import Phaser, { Physics } from "phaser";
-import { playerData } from "../players/load";
-export default class LoadScene extends Phaser.Scene {
+import { Scene } from "phaser";
+import { PlayerScene } from "../players/load";
+import { createdPlayer } from "../utils/utils";
+export default class LoadScene extends Scene {
     platforms;
-    player;
+    player = null;
     cursors;
     start;
     bombs;
     score = 0;
+    parentScene;
     scoreText;
     isCheckMode = false;
     gameOver = false;
@@ -60,24 +62,17 @@ export default class LoadScene extends Phaser.Scene {
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
     }
-    generateCollider(object1, object2, collideCallback, processCallback, callbackContext) {
-        if (!object1 && !object2) return new Error('require collider Object Name!')
-        this.physics.add.collider(object1, object2, collideCallback, processCallback, callbackContext);
-        // return 
+    init({ parentScene }) {
+        this.parentScene = parentScene;
     }
     preload() {
-        this.load.setBaseURL('assets');
-        this.load.image('sky', 'skies/space3.png');
-        this.load.image('logo', 'sprites/phaser3-logo.png');
-        this.load.image('ground', 'sprites/s1.png');
-        this.load.image('red', 'particles/red.png');
-        this.load.image('star', 'particles/star.png');
-        this.load.image('bombs', 'particles/bomb.png');
+
     }
     create() {
         // 
-        this.scene.launch('PlayerScene');
-        this.add.image(400, 300, 'sky');
+        const { x, y, key } = createdPlayer;
+        this.player = this.physics.add.sprite(x, y, key);
+        this.player.setDepth(100);
         this.platforms = this.physics.add.staticGroup();
         this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
         this.platforms.create(600, 400, 'ground');
@@ -96,12 +91,12 @@ export default class LoadScene extends Phaser.Scene {
         this.bombs = this.physics.add.group();
 
         // 碰撞器（Collider）是施魔法的地方。它接收两个对象，检测二者之间的碰撞，并使二者分开。
-        // this.physics.add.collider(this.player, this.platforms);
+        this.physics.add.collider(this.player, this.platforms);
         this.physics.add.collider(this.platforms, this.start);
         this.physics.add.collider(this.bombs, this.platforms);
-        // this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
+        this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
         this.physics.add.collider(this.start);
-        // this.physics.add.overlap(this.player, this.start, this.collectStar, null, this);
+        this.physics.add.overlap(this.player, this.start, this.collectStar, null, this);
         // 
         this.start.children.iterate(function (child) {
             child.setBounceY(Phaser.Math.FloatBetween(.4, .8))
