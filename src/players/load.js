@@ -2,13 +2,13 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-06-05 11:15:39
  * @LastEditors: mayx 1019724021@qq.com
- * @LastEditTime: 2025-06-10 09:40:08
+ * @LastEditTime: 2025-06-12 17:11:58
  * @FilePath: \test\src\players\load.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import { Scene } from "phaser";
-import { preLoadResource, createdPlayer, actionConfigList, preLoadSpritesheet } from "../utils/utils";
-export class PlayerScene extends Scene {
+import { Physics } from "phaser";
+import { preLoadResource, createdPlayer, actionConfigList } from "../utils/utils";
+export class Player extends Physics.Arcade.Image {
     playerInfo;
     cursors;
     player;
@@ -22,11 +22,35 @@ export class PlayerScene extends Scene {
         fill: '#fff',
     };
     constructor({ scene }) {
-        super(scene, "PlayerScene");
+        const { x, y, key } = createdPlayer;
+        super(scene, x, y, key);
         this.scene = scene;
+        this.scene.add.existing(this);
+        // 在子类中保存物理效果
+        this.scene.physics.add.existing(this);
     }
-    preload() {
+    // 批量创建角色动作
+    preLoadActions(actionConfigList) {
+        if (actionConfigList.length === 0 || !Array.isArray(actionConfigList)) return;
+        for (let index = 0; index < actionConfigList.length; index++) {
+            if (!actionConfigList[index].key || actionConfigList[index].key.trim() === '') break;
+            this.scene.anims.create({ ...actionConfigList[index] })
+        }
+    }
 
+    // 处理导入角色和角色动作函数
+    prePlayerActions(array) {
+        const res = [], pushData = {};
+        if (!Array.isArray(array)) return;
+        for (let i = 0; i < array.length; i++) {
+            for (const [index, value] of Object.entries(array[i])) {
+                if (index === 'frames' && typeof value[Symbol.iterator] !== 'function') {
+                    pushData[index] = this.scene.anims.generateFrameNumbers(value.key, { ...value.config });
+                } else pushData[index] = value;
+            }
+            res.push({ ...pushData })
+        }
+        return res;
     }
     changePlayerStatus() {
         console.log(this.score);
@@ -35,9 +59,11 @@ export class PlayerScene extends Scene {
             this.player.body.setVelocity(200);
         }
     }
+    preload() {
+
+    }
     create() {
         // 输入
-        this.cursors = this.input.keyboard.createCursorKeys();
         // 创建文字
         this.scoreText = this.add.text(100, 50, '得分:0', { ...this.scoreStyle });
     }

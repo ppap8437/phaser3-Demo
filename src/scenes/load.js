@@ -2,13 +2,13 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-05-19 15:39:38
  * @LastEditors: mayx 1019724021@qq.com
- * @LastEditTime: 2025-06-10 15:50:10
+ * @LastEditTime: 2025-06-12 16:41:23
  * @FilePath: \test\src\scenes\load.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import { Scene } from "phaser";
-import { PlayerScene } from "../players/load";
-import { createdPlayer } from "../utils/utils";
+import { Player } from "../players/load";
+import { actionConfigList } from "../utils/utils";
 export default class LoadScene extends Scene {
     platforms;
     player = null;
@@ -64,15 +64,17 @@ export default class LoadScene extends Scene {
     }
     init({ parentScene }) {
         this.parentScene = parentScene;
+        const { platforms } = this.parentScene;
+        this.platforms = platforms;
     }
     preload() {
 
     }
     create() {
         // 
-        const { x, y, key } = createdPlayer;
-        this.player = this.physics.add.sprite(x, y, key);
+        this.player = new Player({ scene: this });
         this.player.setDepth(100);
+        this.player.preLoadActions(this.player.prePlayerActions(actionConfigList));
         this.platforms = this.physics.add.staticGroup();
         this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
         this.platforms.create(600, 400, 'ground');
@@ -91,16 +93,19 @@ export default class LoadScene extends Scene {
         this.bombs = this.physics.add.group();
 
         // 碰撞器（Collider）是施魔法的地方。它接收两个对象，检测二者之间的碰撞，并使二者分开。
-        this.physics.add.collider(this.player, this.platforms);
         this.physics.add.collider(this.platforms, this.start);
         this.physics.add.collider(this.bombs, this.platforms);
         this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
         this.physics.add.collider(this.start);
+        this.physics.add.collider(this.player, this.platforms);
         this.physics.add.overlap(this.player, this.start, this.collectStar, null, this);
         // 
         this.start.children.iterate(function (child) {
             child.setBounceY(Phaser.Math.FloatBetween(.4, .8))
         })
+
+        // 
+        this.cursors = this.input.keyboard.createCursorKeys();
     }
     update() {
     }
