@@ -74,7 +74,6 @@ export class Player extends Physics.Arcade.Image {
         }
         else if (this.cursors.right.isDown) {
             this.player.setVelocityX(160);
-
             this.player.anims.play('right', true);
         }
         // 调试模式
