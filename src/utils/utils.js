@@ -20,7 +20,7 @@ export const actionConfigList = [
 ];
 export const createdPlayer = {
     x: 100,
-    y: 250,
+    y: 300,
     key: 'dude',
 }
 export const preLoadResource = [

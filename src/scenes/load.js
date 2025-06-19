@@ -2,16 +2,17 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-05-19 15:39:38
  * @LastEditors: mayx 1019724021@qq.com
- * @LastEditTime: 2025-06-12 16:41:23
+ * @LastEditTime: 2025-06-19 17:24:41
  * @FilePath: \test\src\scenes\load.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import { Scene } from "phaser";
-import { Player } from "../players/load";
-import { actionConfigList } from "../utils/utils";
+import { Player } from "../players";
+import { Platforms } from "../platforms";
 export default class LoadScene extends Scene {
     platforms;
     player = null;
+    playerSprite = null;
     cursors;
     start;
     bombs;
@@ -20,6 +21,7 @@ export default class LoadScene extends Scene {
     scoreText;
     isCheckMode = false;
     gameOver = false;
+    testName;
     scoreStyle = {
         fontSize: '32px',
         fill: '#fff',
@@ -62,6 +64,25 @@ export default class LoadScene extends Scene {
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
     }
+    playerMove() {
+        if (this.cursors.left.isDown) {
+            this.player.move("left");
+        }
+        else if (this.cursors.right.isDown) {
+            this.player.move("right");
+        }
+        // // 调试模式
+        // else if (this.cursors.shift.isDown) {
+        //     this.isCheckMode = !this.isCheckMode;
+        //     // this.showBombs(this.player);
+        // }
+        else {
+            this.player.move();
+        }
+        if (this.cursors.space.isDown && this.player.playerSprite.body.touching.down) {
+            this.player.move("space");
+        }
+    }
     init({ parentScene }) {
         this.parentScene = parentScene;
         const { platforms } = this.parentScene;
@@ -73,13 +94,17 @@ export default class LoadScene extends Scene {
     create() {
         // 
         this.player = new Player({ scene: this });
-        this.player.setDepth(100);
-        this.player.preLoadActions(this.player.prePlayerActions(actionConfigList));
-        this.platforms = this.physics.add.staticGroup();
-        this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-        this.platforms.create(600, 400, 'ground');
-        this.platforms.create(50, 250, 'ground');
-        this.platforms.create(750, 220, 'ground');
+
+        // 
+        this.testName = new Platforms({scene:this});
+        console.log(this.testName);
+        
+        // 
+        // this.platforms = this.physics.add.staticGroup();
+        // this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+        // this.platforms.create(600, 400, 'ground');
+        // this.platforms.create(50, 250, 'ground');
+        // this.platforms.create(750, 220, 'ground');
         // start
         this.start = this.physics.add.group({
             key: 'star',
@@ -95,10 +120,10 @@ export default class LoadScene extends Scene {
         // 碰撞器（Collider）是施魔法的地方。它接收两个对象，检测二者之间的碰撞，并使二者分开。
         this.physics.add.collider(this.platforms, this.start);
         this.physics.add.collider(this.bombs, this.platforms);
-        this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
+        this.physics.add.collider(this.player.playerSprite, this.bombs, this.hitBomb, null, this);
         this.physics.add.collider(this.start);
-        this.physics.add.collider(this.player, this.platforms);
-        this.physics.add.overlap(this.player, this.start, this.collectStar, null, this);
+        this.physics.add.collider(this.player.playerSprite, this.platforms);
+        this.physics.add.overlap(this.player.playerSprite, this.start, this.collectStar, null, this);
         // 
         this.start.children.iterate(function (child) {
             child.setBounceY(Phaser.Math.FloatBetween(.4, .8))
@@ -108,6 +133,7 @@ export default class LoadScene extends Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
     }
     update() {
+        this.playerMove();
     }
 }
 
