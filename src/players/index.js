@@ -2,7 +2,7 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-06-05 11:15:39
  * @LastEditors: mayx 1019724021@qq.com
- * @LastEditTime: 2025-06-19 17:18:16
+ * @LastEditTime: 2025-06-20 14:44:25
  * @FilePath: \test\src\players\load.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%A
  */
@@ -26,7 +26,7 @@ export class Player extends Physics.Arcade.Image {
         // this.scene.add.existing(this); //
         // 在子类中保存物理效果
         // this.scene.physics.add.existing(this);
-        this.playerSprite = this.scene.physics.add.sprite(x, y, key); // 手动创建唯一精灵
+        this.playerSprite = this.scene.physics.add.sprite(x, y, key).setCollideWorldBounds(true); // 手动创建唯一精灵
         this.preLoadActions(this.prePlayerActions(actionConfigList));
         this.playerSprite.play('turn');
         this.setDepth(100);
