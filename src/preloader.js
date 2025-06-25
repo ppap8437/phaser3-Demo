@@ -2,7 +2,7 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-06-09 14:25:22
  * @LastEditors: mayx 1019724021@qq.com
- * @LastEditTime: 2025-06-18 16:28:42
+ * @LastEditTime: 2025-06-24 16:58:59
  * @FilePath: \test\src\preloader.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -36,7 +36,7 @@ export class PreLoader extends Scene {
     create() {
         this.add.image(400, 300, 'sky');
         this.time.addEvent({
-            delay: 1000,
+            delay: 500,
             callback: () => {
                 this.scene.launch("LoadScene", {
                     parentScene: this,

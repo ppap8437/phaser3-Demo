@@ -2,7 +2,7 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-05-19 15:39:38
  * @LastEditors: mayx 1019724021@qq.com
- * @LastEditTime: 2025-06-20 17:23:44
+ * @LastEditTime: 2025-06-25 16:15:04
  * @FilePath: \test\src\scenes\load.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -30,6 +30,7 @@ export default class LoadScene extends Scene {
         super("LoadScene");
     }
     playerMove() {
+        
         if (this.cursors.left.isDown) {
             this.player.move("left");
         }
@@ -39,7 +40,6 @@ export default class LoadScene extends Scene {
         // 调试模式
         else if (this.cursors.shift.isDown) {
             this.isCheckMode = true;
-            this.gamePool.changePlayerStatus();
         }
         else {
             this.player.move();
@@ -69,6 +69,7 @@ export default class LoadScene extends Scene {
         this.physics.add.collider(bombs, gamePlatforms);
         this.physics.add.collider(playerSprite, bombs, hitBomb, null, this);
         this.physics.add.collider(star);
+        this.physics.add.collider(bombs);
         this.physics.add.collider(playerSprite, gamePlatforms);
         this.physics.add.overlap(playerSprite, star, collectStar, null, this);
         this.cursors = this.input.keyboard.createCursorKeys();
