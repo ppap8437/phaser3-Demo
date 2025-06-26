@@ -2,41 +2,64 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-06-05 11:15:39
  * @LastEditors: mayx 1019724021@qq.com
- * @LastEditTime: 2025-06-25 16:14:45
+ * @LastEditTime: 2025-06-26 17:52:16
  * @FilePath: \test\src\players\load.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%A
  */
 import { Physics } from "phaser";
 import { createdPlayer, actionConfigList } from "../utils/utils";
+import { Bullet } from "./Bullet";
 export class Player extends Physics.Arcade.Image {
     playerSprite;
     HpText;
     HP = 100;
-    score = 0;
     scene;
-    speed = 160;
-    jump = 250;
-    isSpeed = false;
-    isSlow = false;
     originalSpeed = 160;
+    speed = this.originalSpeed;
+    jump = 250;
+    activeEffect = null;
+    effectTimer = null;
+    propulsionFire;
     isCheckMode = false;
+    bullets = null;
     scoreStyle = {
         fontSize: '24px',
         fill: '#fff',
     };
     constructor({ scene }) {
-        super(scene);
-        this.scene = scene;
         const { x, y, key } = createdPlayer;
+        super(scene, x, y, key);
+        this.scene = scene;
         // this.scene.add.existing(this); //
         // 在子类中保存物理效果
         // this.scene.physics.add.existing(this);
-        this.playerSprite = this.scene.physics.add.sprite(x, y, key).setCollideWorldBounds(true); // 手动创建唯一精灵
+        this.playerSprite = this.scene.physics.add.sprite(this.x, this.y, key).setCollideWorldBounds(true); // 手动创建唯一精灵
         this.preLoadActions(this.prePlayerActions(actionConfigList));
         this.playerSprite.play('turn');
         this.setDepth(100);
+        this.name = key;
+        // bullet
+        this.bullets = this.scene.physics.add.group({
+            classType: Bullet,//自定义子对象类
+            maxSize: 100,
+            runChildUpdate: true,//是否自动调用子对象update()
+        })
         this.HpText = this.scene.add.text(16, 46, `血量:${this.HP}`, { ...this.scoreStyle });
 
+    }
+    applyEffect(type, multiplier) {
+        // 清除旧效果
+        if (this.effectTimer) {
+            this.effectTimer.destroy();
+            this.speed = this.originalSpeed;
+        }
+        this.activeEffect = type;
+        this.speed = this.originalSpeed * multiplier;
+
+        this.effectTimer = this.scene.time.delayedCall(2000, () => {
+            this.speed = this.originalSpeed;
+            this.activeEffect = null;
+        })
     }
     // 批量创建角色动作
     preLoadActions(actionConfigList) {
@@ -62,27 +85,14 @@ export class Player extends Physics.Arcade.Image {
     }
     // 
     collectSpeedBoost(player) {
-        // 防止速度无限叠加 （或者说有次数上限）
-        if (this.isSpeed) { return };
-        this.originalSpeed = this.speed;
-        this.isSpeed = true;
-        this.speed *= 2;
+        if (this.activeEffect) return;
+        this.applyEffect('speed', 2);
         this.changePlayerColor(player, 0xffff00, 2000);
-        this.scene.time.delayedCall(2000, () => {
-            this.isSpeed = false;
-            this.speed = this.originalSpeed;
-        })
     }
     collectBombsSpeed(player) {
-        if (this.isSlow) { return; }
-        this.isSlow = true;
-        this.speed = this.originalSpeed;
-        this.speed /= 2;
+        if (this.activeEffect) return;
+        this.applyEffect('slow', 0.5);
         this.changePlayerColor(player, 0xff0000, 2000);
-        this.scene.time.delayedCall(2000, () => {
-            this.isSlow = false;
-            this.speed = this.originalSpeed;
-        })
     }
     changePlayerColor(player, color, delay = 100) {
         if (!player) return;
@@ -110,6 +120,16 @@ export class Player extends Physics.Arcade.Image {
         }
         if (direction === 'space') {
             this.playerSprite.setVelocityY(-this.jump);
+        }
+    }
+    // fire
+    fire(x, y) {
+        const bullet = this.bullets.get();
+        const { body: { x: player_x, y: player_y } } = this.playerSprite;
+        console.log(bullet);
+        if (bullet) {
+            console.log(player_x, player_y,bullet);
+            bullet.fire(player_x + 16, player_y + 5, x, y);
         }
     }
 }

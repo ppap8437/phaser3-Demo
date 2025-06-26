@@ -2,11 +2,11 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-05-19 15:39:38
  * @LastEditors: mayx 1019724021@qq.com
- * @LastEditTime: 2025-06-25 16:15:04
+ * @LastEditTime: 2025-06-26 17:44:22
  * @FilePath: \test\src\scenes\load.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import { Scene } from "phaser";
+import { Scene, Input } from "phaser";
 import { Player } from "../players";
 import { Platforms } from "../platforms";
 import { GameObjectsPool } from "../GameObjectsPool";
@@ -14,7 +14,7 @@ export default class LoadScene extends Scene {
     platforms;
     player = null;
     cursors;
-    start;
+    test;
     parentScene;
     isCheckMode = false;
     gameOver = false;
@@ -30,7 +30,6 @@ export default class LoadScene extends Scene {
         super("LoadScene");
     }
     playerMove() {
-        
         if (this.cursors.left.isDown) {
             this.player.move("left");
         }
@@ -44,7 +43,7 @@ export default class LoadScene extends Scene {
         else {
             this.player.move();
         }
-        if (this.cursors.space.isDown && this.player.playerSprite.body.touching.down) {
+        if (this.cursors.jump.isDown && this.player.playerSprite.body.touching.down) {
             this.player.move("space");
         }
     }
@@ -72,7 +71,17 @@ export default class LoadScene extends Scene {
         this.physics.add.collider(bombs);
         this.physics.add.collider(playerSprite, gamePlatforms);
         this.physics.add.overlap(playerSprite, star, collectStar, null, this);
-        this.cursors = this.input.keyboard.createCursorKeys();
+        // 
+        const { W, S, D, A, F, SPACE, SHIFT } = Input.Keyboard.KeyCodes;
+        // this.cursors = this.input.keyboard.createCursorKeys();
+        this.cursors = this.input.keyboard.addKeys({ 'up': W, 'down': S, 'left': A, 'right': D, 'fire': F, 'jump': SPACE, 'shift': SHIFT })
+        // 键盘监听事件只能放在created函数中，放在update中会导致事件重复绑定，导致内存溢出
+        this.cursors.fire.on("down", () => {
+            this.player.fire();
+        });
+        this.input.on("pointerdown", ({ x, y } = pointer) => {
+            this.player.fire(x, y);
+        });
     }
     update() {
         this.playerMove();

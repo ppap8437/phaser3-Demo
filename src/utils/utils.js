@@ -42,7 +42,17 @@ export const preLoadResource = [
     }, {
         key: 'bombs',
         path: 'particles/bomb.png'
-    },
+    },{
+        key:'bullet',
+        path:'particles/bullet.png'
+    }
+]
+export const preLoadAtlas = [
+    {
+        key:'propulsion-fire',
+        textureURL:'players/propulsion/propulsion-fire.png',
+        atlasURL:'players/propulsion/propulsion-fire_atlas.json'
+    }
 ]
 export const preLoadSpritesheet = [
     {
