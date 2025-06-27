@@ -2,7 +2,7 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-06-05 11:15:39
  * @LastEditors: mayx 1019724021@qq.com
- * @LastEditTime: 2025-06-26 17:52:16
+ * @LastEditTime: 2025-06-27 16:39:09
  * @FilePath: \test\src\players\load.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%A
  */
@@ -43,6 +43,7 @@ export class Player extends Physics.Arcade.Image {
             classType: Bullet,//自定义子对象类
             maxSize: 100,
             runChildUpdate: true,//是否自动调用子对象update()
+            allowGravity:false
         })
         this.HpText = this.scene.add.text(16, 46, `血量:${this.HP}`, { ...this.scoreStyle });
 
@@ -87,18 +88,20 @@ export class Player extends Physics.Arcade.Image {
     collectSpeedBoost(player) {
         if (this.activeEffect) return;
         this.applyEffect('speed', 2);
-        this.changePlayerColor(player, 0xffff00, 2000);
+        this.changePlayerColor(player, 0xffff00, 2000, true);
     }
     collectBombsSpeed(player) {
         if (this.activeEffect) return;
         this.applyEffect('slow', 0.5);
         this.changePlayerColor(player, 0xff0000, 2000);
     }
-    changePlayerColor(player, color, delay = 100) {
+    changePlayerColor(player, color, delay = 100, isShow = false) {
         if (!player) return;
         player.setTint(color);
+        if (isShow) { player.postFX.addBloom(0xffffff, 1, 1, 2, 1.2) };
         setTimeout(() => {
             player.clearTint()
+            player.postFX.clear();
         }, delay);
     }
     move(direction) {
@@ -124,12 +127,10 @@ export class Player extends Physics.Arcade.Image {
     }
     // fire
     fire(x, y) {
-        const bullet = this.bullets.get();
+        const bullet = this.bullets.get(x,y,'bullet');        
         const { body: { x: player_x, y: player_y } } = this.playerSprite;
-        console.log(bullet);
         if (bullet) {
-            console.log(player_x, player_y,bullet);
-            bullet.fire(player_x + 16, player_y + 5, x, y);
+            bullet.fire(player_x + 16, player_y + 36, x, y);
         }
     }
 }

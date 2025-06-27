@@ -2,7 +2,7 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-05-19 15:39:38
  * @LastEditors: mayx 1019724021@qq.com
- * @LastEditTime: 2025-06-26 17:44:22
+ * @LastEditTime: 2025-06-27 16:55:32
  * @FilePath: \test\src\scenes\load.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -55,11 +55,12 @@ export default class LoadScene extends Scene {
         this.scoreText = this.add.text(16, 16, `得分:${this.score}`, { ...this.scoreStyle });
         // 
         this.player = new Player({ scene: this });
+
         // 
         this.platforms = new Platforms({ scene: this });
         // 
         this.gamePool = new GameObjectsPool({ scene: this });
-        const { playerSprite } = this.player;
+        const { playerSprite, bullets } = this.player;
         const { gamePlatforms } = this.platforms;
         const { star, bombs, collectStar, hitBomb } = this.gamePool;
 
@@ -82,6 +83,15 @@ export default class LoadScene extends Scene {
         this.input.on("pointerdown", ({ x, y } = pointer) => {
             this.player.fire(x, y);
         });
+        // 监听子弹
+        this.physics.add.overlap(bullets, bombs, (bullets, bombs) => {
+            bullets.destroyBullet();
+            console.log(bombs);
+            
+        })
+        this.physics.add.overlap(bullets,gamePlatforms,(bullets,platforms)=>{
+            bullets.destroyBullet();
+        })
     }
     update() {
         this.playerMove();

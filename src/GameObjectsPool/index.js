@@ -2,7 +2,7 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-06-19 17:41:23
  * @LastEditors: mayx 1019724021@qq.com
- * @LastEditTime: 2025-06-24 17:04:04
+ * @LastEditTime: 2025-06-27 16:57:12
  * @FilePath: \test\src\GameObjectsPool\index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -17,6 +17,7 @@ export class GameObjectsPool extends Physics.Arcade.Image {
     constructor({ scene }) {
         super(scene);// Physics.Arcade.Image父类继承机制 强制要求传入场景实例作为第一个参数
         this.scene = scene;
+        this.name = 'gamePool'
         this.init();
     }
     init() {

@@ -41,9 +41,6 @@ export class PreLoader extends Scene {
         this.load.setBaseURL('assets');
         this.autoLoadAllResource('image', preLoadResource);
         this.autoLoadAllResource('spritesheet', preLoadSpritesheet);
-        // this.autoLoadAllResource('atlas', preLoadAtlas);
-        // this.load.animation("propulsion-fire-anim", "players/propulsion/propulsion-fire_anim.json");
-        // 
         this.load.on("progress", (progress) => {
             console.log('正在加载....' + Math.round(progress * 100) + '%');
             if (progress === 1) console.log('加载完成');
