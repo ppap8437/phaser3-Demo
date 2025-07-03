@@ -2,7 +2,7 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-06-05 11:15:39
  * @LastEditors: mayx 1019724021@qq.com
- * @LastEditTime: 2025-06-27 16:39:09
+ * @LastEditTime: 2025-07-01 14:28:03
  * @FilePath: \test\src\players\load.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%A
  */
@@ -19,7 +19,6 @@ export class Player extends Physics.Arcade.Image {
     jump = 250;
     activeEffect = null;
     effectTimer = null;
-    propulsionFire;
     isCheckMode = false;
     bullets = null;
     scoreStyle = {
@@ -46,7 +45,7 @@ export class Player extends Physics.Arcade.Image {
             allowGravity:false
         })
         this.HpText = this.scene.add.text(16, 46, `血量:${this.HP}`, { ...this.scoreStyle });
-
+        
     }
     applyEffect(type, multiplier) {
         // 清除旧效果
@@ -127,7 +126,7 @@ export class Player extends Physics.Arcade.Image {
     }
     // fire
     fire(x, y) {
-        const bullet = this.bullets.get(x,y,'bullet');        
+        const bullet = this.bullets.get(x,y,'bullet');      
         const { body: { x: player_x, y: player_y } } = this.playerSprite;
         if (bullet) {
             bullet.fire(player_x + 16, player_y + 36, x, y);

@@ -1,8 +1,8 @@
 /*
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-06-19 17:41:23
- * @LastEditors: mayx 1019724021@qq.com
- * @LastEditTime: 2025-06-27 16:57:12
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2025-07-03 16:56:18
  * @FilePath: \test\src\GameObjectsPool\index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -13,7 +13,6 @@ export class GameObjectsPool extends Physics.Arcade.Image {
     scene;
     star;
     bombs;
-    test1 = '子类';
     constructor({ scene }) {
         super(scene);// Physics.Arcade.Image父类继承机制 强制要求传入场景实例作为第一个参数
         this.scene = scene;
@@ -23,7 +22,6 @@ export class GameObjectsPool extends Physics.Arcade.Image {
     init() {
         this.initStars();
         this.initBombs();
-
     }
     initStars() {
         this.star = this.scene.physics.add.group({
@@ -56,18 +54,37 @@ export class GameObjectsPool extends Physics.Arcade.Image {
             this.gamePool.showBombs(player);
         }
     }
+    explode(bombs, damage) {
+        if (!bombs || !damage) return;
+        bombs.setData('health', bombs.getData('health') - damage);
+        if (bombs.getData('health') <= 0) {
+            bombs.setData('currentStep', 0);
+            bombs.setActive(false);
+            bombs.setVisible(false);
+            bombs.destroy();
+        }
+    }
 
     showBombs(player) {
         const nextBombsPosition = Phaser.Math.Between(player.x - 30, player.x + 30);
         if (this.bombs.countActive(true) < 2) {
             this.bombs.create(nextBombsPosition, 16, 'bombs').setBounce(1)
-                .setCollideWorldBounds(true).setVelocity(Phaser.Math.Between(-200, 200), 20);
+                .setCollideWorldBounds(true).setVelocity(Phaser.Math.Between(-200, 200), 20).setData('health', 100).setData({
+                    health: 100,
+                    owner: player,
+                    name: 'bombs_' + player.x,
+                    currentStep: 0,
+                });
+
+
         }
     }
 
     // 检测玩家是否碰到炸弹
     hitBomb(player, bombs) {
         bombs.disableBody(true, true);
+        console.log(this);
+        this.playerHealth.se
         this.player.HP -= 20;
         this.player.HpText.setText('血量:' + this.player.HP);
         this.player.collectBombsSpeed(player);
