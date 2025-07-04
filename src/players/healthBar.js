@@ -2,7 +2,7 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-07-01 11:48:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-07-03 16:10:20
+ * @LastEditTime: 2025-07-04 15:11:25
  * @FilePath: \test\src\players\healthBar.js
  * @Description: 动态血量、受伤状态
  */
@@ -20,7 +20,6 @@ export class HealthBar extends GameObjects.Container {
         this.scene = scene;
         this.maxHealth = maxHealth;
         scene.add.existing(this);
-
         this.currentPercent = 1;
         this.rt = scene.add.graphics();
         this.add(this.rt);
@@ -54,7 +53,7 @@ export class HealthBar extends GameObjects.Container {
                     percent,
                     tween.progress
                 );
-                console.log('111111', currentPercent);
+                // console.log('111111', currentPercent);
                 this.rt.clear().fillRect(0, 0, this.width * currentPercent, this.height);
             },
             onComplete: () => {

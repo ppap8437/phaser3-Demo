@@ -1,8 +1,8 @@
 /*
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-06-05 11:15:39
- * @LastEditors: mayx 1019724021@qq.com
- * @LastEditTime: 2025-07-01 14:28:03
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2025-07-04 11:01:11
  * @FilePath: \test\src\players\load.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%A
  */
@@ -12,7 +12,8 @@ import { Bullet } from "./Bullet";
 export class Player extends Physics.Arcade.Image {
     playerSprite;
     HpText;
-    HP = 100;
+    HP;
+    fullHp;
     scene;
     originalSpeed = 160;
     speed = this.originalSpeed;
@@ -25,10 +26,12 @@ export class Player extends Physics.Arcade.Image {
         fontSize: '24px',
         fill: '#fff',
     };
-    constructor({ scene }) {
+    constructor({ scene,hp=100 }) {
         const { x, y, key } = createdPlayer;
         super(scene, x, y, key);
         this.scene = scene;
+        this.HP = hp;
+        this.fullHp = hp;
         // this.scene.add.existing(this); //
         // 在子类中保存物理效果
         // this.scene.physics.add.existing(this);
@@ -44,7 +47,7 @@ export class Player extends Physics.Arcade.Image {
             runChildUpdate: true,//是否自动调用子对象update()
             allowGravity:false
         })
-        this.HpText = this.scene.add.text(16, 46, `血量:${this.HP}`, { ...this.scoreStyle });
+        this.HpText = this.scene.add.text(16, 46, `血量:`, { ...this.scoreStyle });
         
     }
     applyEffect(type, multiplier) {

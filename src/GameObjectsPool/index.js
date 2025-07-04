@@ -2,7 +2,7 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-06-19 17:41:23
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-07-03 16:56:18
+ * @LastEditTime: 2025-07-04 15:08:57
  * @FilePath: \test\src\GameObjectsPool\index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -13,6 +13,8 @@ export class GameObjectsPool extends Physics.Arcade.Image {
     scene;
     star;
     bombs;
+    bombDamage = 20;//炸弹伤害
+    point = 10;
     constructor({ scene }) {
         super(scene);// Physics.Arcade.Image父类继承机制 强制要求传入场景实例作为第一个参数
         this.scene = scene;
@@ -44,9 +46,14 @@ export class GameObjectsPool extends Physics.Arcade.Image {
     // 检测玩家是否碰到星星
     collectStar(player, star) {
         star.disableBody(true, true);
-        this.score += 10;
+        this.score += this.gamePool.point;
         this.scoreText.setText('得分:' + this.score);
         this.player.collectSpeedBoost(player);
+        const healthRestore = (this.player.HP + (this.gamePool.point / this.player.fullHp) * this.player.HP) / this.player.fullHp;
+        this.player.HP += this.gamePool.point;
+        if(this.player.HP>=this.player.fullHp) this.player.HP = this.player.fullHp;
+        console.log('当前血量', this.player.HP, healthRestore);
+        this.playerHealth.animateTo(healthRestore);//动态血量显示
         if (this.gamePool.star.countActive(true) === 0) {
             var nextStarPosition = player.x < 350 ? Phaser.Math.Between(350, 800) : Phaser.Math.Between(0, 350);
             this.gamePool.star.create(nextStarPosition, 16, 'star').setBounce(1).setVelocity(Phaser.Math.Between(-180, 200), 20)
@@ -83,10 +90,11 @@ export class GameObjectsPool extends Physics.Arcade.Image {
     // 检测玩家是否碰到炸弹
     hitBomb(player, bombs) {
         bombs.disableBody(true, true);
-        console.log(this);
-        this.playerHealth.se
-        this.player.HP -= 20;
-        this.player.HpText.setText('血量:' + this.player.HP);
+        const restHp = 1 - this.gamePool.bombDamage / this.player.HP; // 剩余血量
+        this.player.HP -= this.gamePool.bombDamage;
+        console.log(this.player.HP, this.gamePool.bombDamage);
+
+        this.playerHealth.setPerecent(restHp);
         this.player.collectBombsSpeed(player);
         if (this.player.HP <= 0) {
             player.anims.play('turn');

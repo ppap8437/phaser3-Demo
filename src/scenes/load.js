@@ -2,7 +2,7 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-05-19 15:39:38
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-07-03 16:47:31
+ * @LastEditTime: 2025-07-04 11:07:46
  * @FilePath: \test\src\scenes\load.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -54,7 +54,7 @@ export default class LoadScene extends Scene {
         this.scoreText = this.add.text(16, 16, `得分:${this.score}`, { ...this.scoreStyle });
         this.playerHealth = new HealthBar(this, 16, 46, 100);
         // 
-        this.player = new Player({ scene: this });
+        this.player = new Player({ scene: this,hp:200 });
 
         // 
         this.platforms = new Platforms({ scene: this });
