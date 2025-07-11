@@ -10,14 +10,18 @@
 import { Scene } from "phaser";
 import LoadScene from "./scenes/load";
 import { PreLoader } from "./preloader";
+import { SplashScene } from "./scenes/splashScene";
 class Example extends Scene {
 }
 const config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
-    scene: [PreLoader,LoadScene],// 多场景加载需要手动激活
+    scene: [PreLoader, SplashScene, LoadScene],// 多场景加载需要手动激活
     parent: 'game',
+    backgroundColor: "#1c172e",
+    pixelArt: true,
+    roundPixel: false,
     physics: {
         default: 'arcade',
         arcade: {

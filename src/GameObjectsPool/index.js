@@ -2,7 +2,7 @@
  * @Author: mayx 1019724021@qq.com
  * @Date: 2025-06-19 17:41:23
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-07-09 16:19:18
+ * @LastEditTime: 2025-07-10 11:29:22
  * @FilePath: \test\src\GameObjectsPool\index.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -13,7 +13,7 @@ export class GameObjectsPool extends Physics.Arcade.Image {
     scene;
     star;
     bombs;
-    bombDamage = 50;//炸弹伤害
+    bombDamage = 100;//炸弹伤害
     point = 10;
     constructor({ scene }) {
         super(scene);// Physics.Arcade.Image父类继承机制 强制要求传入场景实例作为第一个参数
